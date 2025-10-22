@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchBooks, deleteBook } from "../../features/BookSlice";
-import type { RootState, AppDispatch } from "../../app/";
+import type { RootState, AppDispatch } from "../../app/Store";
+import { openEditModal } from "../../features/BookSlice";
 
 const BookList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,7 +35,12 @@ const BookList = () => {
               <td className="py-2 px-4">${book.price}</td>
               <td className="py-2 px-4">{book.category}</td>
               <td className="py-2 px-4 text-center">
-                <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2">Edit</button>
+                <button
+                  onClick={() => dispatch(openEditModal(book))}
+                   className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                  >
+                    Edit
+                </button>
                 <button
                   className="bg-red-500 text-white px-3 py-1 rounded"
                   onClick={() => dispatch(deleteBook(book.id!))}

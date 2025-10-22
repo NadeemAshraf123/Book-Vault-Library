@@ -2,6 +2,7 @@ import { useState } from 'react'
 import BookList from './components/books/BookList'
 import './App.css'
 import AddBookForm from './components/books/AddBookForm'
+import EditBookModal from './components/books/EditBookModal'
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
       <h1 className="text-3xl font-bold text-center py-6">📖 BookVault Library</h1>
       <AddBookForm />
       <BookList />
+      <EditBookModal />
 
     </div>
     </>

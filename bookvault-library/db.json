@@ -1,3 +1,20 @@
 {
-  "books": []
+  "books": [
+    {
+      "id": "417a",
+      "title": "Eden",
+      "author": "Iqbal",
+      "price": 200,
+      "category": "Books"
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "name": "Ali Ahmed",
+      "email": "ali@gmail.com",
+      "role": "admin"
+    }
+  ],
+  "borrowRecords": []
 }
