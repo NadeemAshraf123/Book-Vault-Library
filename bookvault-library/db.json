@@ -1,11 +1,18 @@
 {
   "books": [
     {
-      "id": "417a",
-      "title": "Eden",
-      "author": "Iqbal",
-      "price": 200,
+      "id": "e8c6",
+      "title": "Lions",
+      "author": "Adil",
+      "price": 800,
       "category": "Books"
+    },
+    {
+      "id": "68f4",
+      "title": "Maths",
+      "author": "Adil",
+      "price": 800,
+      "category": "Story Book"
     }
   ],
   "users": [

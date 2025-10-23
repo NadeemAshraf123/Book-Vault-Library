@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { updateBook, closeEditModal } from "../../features/BookSlice";
 import type { RootState, AppDispatch } from "../../app/Store";
 
-interface EditBookModalProps {
-  book: any;
-  onClose: () => void;
-}
-
 const EditBookModal = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const { selectedBook, isEditModalOpen } = useSelector(
     (state: RootState) => state.books
@@ -29,6 +26,7 @@ const EditBookModal = () => {
     category: "",
   });
 
+  
   useEffect(() => {
     if (selectedBook) {
       setFormData({
@@ -39,6 +37,23 @@ const EditBookModal = () => {
       });
     }
   }, [selectedBook]);
+
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        modalRef.current &&
+        !modalRef.current.contains(event.target as Node)
+      ) {
+        dispatch(closeEditModal());
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dispatch]);
 
   const validate = () => {
     const newErrors = {
@@ -57,12 +72,15 @@ const EditBookModal = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-    setErrors((prev) => ({ ...prev, [e.target.name]: "" })); // clear error on change
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleSubmit = () => {
     if (!selectedBook) return;
-    if (!validate()) return;
+    if (!validate()) {
+      toast.error("Please fix validation errors");
+      return ;
+    } 
 
     dispatch(
       updateBook({
@@ -71,6 +89,7 @@ const EditBookModal = () => {
         price: parseFloat(formData.price),
       })
     );
+    toast.success("Book updated successfully");
     dispatch(closeEditModal());
   };
 
@@ -78,19 +97,31 @@ const EditBookModal = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="edit-book-title"
     >
-      <div className="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h2 id="edit-book-title" className="text-xl font-bold mb-4">
-          Edit Book
-        </h2>
+      <div
+        ref={modalRef}
+        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
+      >
+        <div className="flex justify-between mb-2">
+          <h2 id="edit-book-title" className="text-xl text-left font-bold">
+            Edit Book
+          </h2>
+          <button
+            onClick={() => dispatch(closeEditModal())}
+            className="text-gray-500 cursor-pointer hover:text-gray-700 text-4xl"
+            aria-label="Close modal"
+          >
+            &times;
+          </button>
+        </div>
 
         {["title", "author", "price", "category"].map((field) => (
           <div key={field} className="mb-4">
-            <label className="block text-sm font-medium capitalize">
+            <label className="block text-sm text-left font-medium capitalize">
               {field}
             </label>
             <input
@@ -109,16 +140,16 @@ const EditBookModal = () => {
           </div>
         ))}
 
-        <div className="flex justify-end mt-6 space-x-2">
+        <div className="flex justify-between mt-6 space-x-2">
           <button
             onClick={() => dispatch(closeEditModal())}
-            className="px-4 py-2 bg-gray-500 text-white rounded"
+            className="px-4 py-2 bg-gray-500 cursor-pointer hover:bg-gray-600 text-white rounded-lg"
           >
             Close
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 cursor-pointer text-white rounded-xl"
           >
             Save Changes
           </button>
